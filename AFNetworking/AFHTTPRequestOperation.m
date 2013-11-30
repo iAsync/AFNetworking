@@ -42,6 +42,12 @@ static dispatch_group_t http_request_operation_completion_group() {
     return af_http_request_operation_completion_group;
 }
 
+typedef void (^AFSuccessfulCompletionBlock)(AFHTTPRequestOperation *operation, id responseObject);
+
+typedef void (^AFUnsuccessfulCompletionBlock)(AFHTTPRequestOperation *operation, NSError *error);
+
+
+
 #pragma mark -
 
 @interface AFHTTPRequestOperation ()
@@ -50,9 +56,16 @@ static dispatch_group_t http_request_operation_completion_group() {
 @property (readwrite, nonatomic, strong) id responseObject;
 @property (readwrite, nonatomic, strong) NSError *responseSerializationError;
 @property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
+
 @end
 
 @implementation AFHTTPRequestOperation
+{
+   AFSuccessfulCompletionBlock   _onSuccess;
+   AFUnsuccessfulCompletionBlock _onError  ;
+}
+
+
 @dynamic lock;
 
 - (instancetype)initWithRequest:(NSURLRequest *)urlRequest {
@@ -104,6 +117,13 @@ static dispatch_group_t http_request_operation_completion_group() {
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
 {
     // completionBlock is manually nilled out in AFURLConnectionOperation to break the retain cycle.
+   
+   success = [ success copy ];
+   failure = [ failure copy ];
+   
+   self->_onSuccess = success;
+   self->_onError   = failure;
+   
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
 #pragma clang diagnostic ignored "-Wgnu"

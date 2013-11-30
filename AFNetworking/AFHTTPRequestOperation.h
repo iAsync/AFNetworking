@@ -65,4 +65,10 @@
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
                               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
+
+
+@property ( nonatomic, copy ) void (^onSuccess)(AFHTTPRequestOperation *operation, id responseObject);
+
+@property ( nonatomic, copy ) void (^onError)(AFHTTPRequestOperation *operation, NSError *error);
+
 @end
