@@ -86,6 +86,12 @@
 /// @name Accessing Run Loop Modes
 ///-------------------------------
 
+
+@property (readonly, nonatomic, copy) void(^uploadProgress)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected);
+@property (readonly, nonatomic, copy) void(^downloadProgress)(NSUInteger bytes, long long totalBytes, long long totalBytesExpected);
+
+
+
 /**
  The run loop modes in which the operation will run on the network thread. By default, this is a single-member set containing `NSRunLoopCommonModes`.
  */
